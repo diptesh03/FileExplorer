@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import './../../App.css'
 
-function index({ getFiles }) {
+function index({ getFiles, defaultFolder = "root" }) {
   const [reload, setReload] = useState(false)
   const [displayText, setDisplayText] = useState(false);
   const [treeView, setTreeView] = useState([]);
-  const [files, setfiles] = useState({ "name": "root" });
+  const [files, setfiles] = useState({ "name": defaultFolder });
 
   useEffect(() => {
     getItemsRecursively([files], []);
