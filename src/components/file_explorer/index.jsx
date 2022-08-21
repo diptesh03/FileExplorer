@@ -17,7 +17,7 @@ function index({ getFiles }) {
 
   return (
     <div className="App">
-      <h1>React Accordion Demo</h1>
+      <h1>File Explorer</h1>
       <div className="accordion">
         {
           accordianElem &&
