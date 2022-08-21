@@ -23,7 +23,7 @@ function index({ getFiles }) {
           accordianElem &&
           accordianElem
         }
-        <div id="overlay" onClick={() => onItemClick('none')}>
+        <div id="overlay" onClick={() => onItemClick('','none')}>
           <div id="text">{displayText}</div>
         </div>
       </div>
@@ -41,9 +41,9 @@ function index({ getFiles }) {
       })
   }
 
-  function onItemClick(value, text=''){
+  function onItemClick(text='', value){
     setDisplayText(text);
-    document.getElementById("overlay").style.display = value;
+    document.getElementById("overlay").style.display =  value;
   }
 
   function getItemsRecursively(entries = [], prevValues = [], space=0) {
@@ -62,7 +62,7 @@ function index({ getFiles }) {
           }
           <a className='accordion-title' data-type={entries[i]?.type} data-contents={entries[i]?.contents} onClick={(e) => {
             if (e.currentTarget.dataset.type === 'file') {
-              onItemClick(e.currentTarget.dataset.contents, 'block')
+              onItemClick(e.currentTarget.dataset.contents || 'No Content', 'block')
             }
           }}>
             {entries[i]?.name}
