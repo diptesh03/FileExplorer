@@ -56,7 +56,7 @@ function index({ getFiles }) {
       }
 
       element.push(
-        <div style={{marginLeft: space}} className="accordion-item" key={entries[i]?.name + i + Math.random()}>
+        <div style={{marginLeft: space}} className="accordion-item" key={entries[i]?.name + i}>
           {
             <div className="accordion-icon" data-item={entries[i]?.name} data-isactive={entries[i]?.isActive} onClick={(e) => onExpandIconClick(e, entries[i]?.isActive)}>{entries[i]?.type != 'file' ? entries[i]?.isActive ? "-" : "+" : ''}</div>
           }
