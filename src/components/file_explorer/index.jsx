@@ -11,44 +11,8 @@ function index({ getFiles }) {
     "name": "root"
   })
 
-
-
-  function initializeDataRecursively(obj, property, entries, toggle, reloadExplorer = true, isSetfiles = true) {
-
-    for (var i = 0; i <= Object.keys(obj).length; i++) {
-      var key = Object.keys(obj)[i];
-      console.log(`key: ${key}, value: ${obj[key]}`)
-
-      if (Array.isArray(obj)) {
-        var tempKey = key;
-        key = obj.findIndex((e) => e.name == property)
-        if (key < 0) {
-          key = tempKey;
-        }
-      }
-
-      if (obj[key] == property) {
-        obj.entries = entries;
-        obj.isActive = toggle;
-        if (!obj.isActive) {
-          delete obj.isActive;
-        }
-        if (isSetfiles)
-          initializeDataRecursively(files, property, obj.entries, toggle, reloadExplorer = true, false)
-
-
-        if (reloadExplorer)
-          setLoadExplorer(!loadExplore);
-        break;
-      }
-      if (typeof obj[key] === 'object' && obj[key] !== null) {
-        initializeDataRecursively(obj[key], property, entries, toggle, reloadExplorer = false, isSetfiles)
-      }
-    }
-  }
-
   useEffect(() => {
-    getAccordionItem(files)
+    getItemsRecursively([files], []);
   }, [loadExplore])
 
   return (
@@ -59,11 +23,7 @@ function index({ getFiles }) {
           accordianElem &&
           accordianElem
         }
-        <div id="overlay" onClick={() => {
-
-          setDisplayText("")
-          document.getElementById("overlay").style.display = "none"
-        }}>
+        <div id="overlay" onClick={() => onItemClick('none')}>
           <div id="text">{displayText}</div>
         </div>
       </div>
@@ -77,48 +37,81 @@ function index({ getFiles }) {
       .then((resp) => {
         resp.data.name = resp.data.id;
         delete resp.data.id;
-        console.log(resp.data);
         initializeDataRecursively(files, currentItem, resp.data.entries, isActive)
       })
   }
 
-  function getAccordionItem(data) {
-    // if (files?.entries && files.isActive) {
-    //    var item = iterate(files, files?.name, files.entries, files.isActive, false);
-    // }
-    getItemsRecursively([files], [])
+  function onItemClick(value, text=''){
+    setDisplayText(text);
+    document.getElementById("overlay").style.display = value;
   }
 
-  function getItemsRecursively(entries = [], prevValues = []) {
+  function getItemsRecursively(entries = [], prevValues = [], space=0) {
     var element = prevValues;
     for (var i = 0; i <= entries.length; i++) {
       let name = entries[i]?.name;
+      
       if (name == null || name == undefined) {
         break;
       }
 
       element.push(
-        <div className="accordion-item" key={entries[i]?.name + i + Math.random()}>
+        <div style={{marginLeft: space}} className="accordion-item" key={entries[i]?.name + i + Math.random()}>
           {
-            <div className={'accordion-icon'} data-item={entries[i]?.name} data-isactive={entries[i]?.isActive} onClick={(e) => onExpandIconClick(e, entries[i]?.isActive)}>{entries[i]?.type != 'file' ? entries[i]?.isActive ? "-" : "+" : ''}</div>
+            <div className="accordion-icon" data-item={entries[i]?.name} data-isactive={entries[i]?.isActive} onClick={(e) => onExpandIconClick(e, entries[i]?.isActive)}>{entries[i]?.type != 'file' ? entries[i]?.isActive ? "-" : "+" : ''}</div>
           }
           <a className='accordion-title' data-type={entries[i]?.type} data-contents={entries[i]?.contents} onClick={(e) => {
             if (e.currentTarget.dataset.type === 'file') {
-              setDisplayText(e.currentTarget.dataset.contents)
-              document.getElementById("overlay").style.display = "block"
+              onItemClick(e.currentTarget.dataset.contents, 'block')
             }
           }}>
             {entries[i]?.name}
           </a>
         </div>)
       if (entries[i]?.entries && entries[i]?.isActive) {
-        getItemsRecursively(entries[i]?.entries, element);
+        getItemsRecursively(entries[i]?.entries, element, space + 30);
       }
     }
 
     return setAccordianElem(element);
 
   }
+
+
+  function initializeDataRecursively(obj, property, entries, toggle, reloadExplorer = true, isSetfiles = true) {
+
+    for (var i = 0; i <= Object.keys(obj).length; i++) {
+      var key = Object.keys(obj)[i];
+
+      if (Array.isArray(obj)) {
+        var tempKey = key;
+        key = obj.findIndex((e) => e.name == property)
+        if (key < 0) {
+          key = tempKey;
+        }
+      }
+
+      if (obj[key] == property) {
+        obj.entries = entries;
+        obj.isActive = toggle;
+
+        if (!obj.isActive) 
+          delete obj.isActive;
+
+        if (isSetfiles)
+          initializeDataRecursively(files, property, obj.entries, toggle, reloadExplorer = true, false)
+
+
+        if (reloadExplorer)
+          setLoadExplorer(!loadExplore);
+          break;
+      }
+      if (typeof obj[key] === 'object' && obj[key] !== null) {
+        initializeDataRecursively(obj[key], property, entries, toggle, reloadExplorer = false, isSetfiles)
+      }
+    }
+  }
+
 }
 
 
