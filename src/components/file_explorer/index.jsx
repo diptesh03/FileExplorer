@@ -3,12 +3,12 @@ import './../../App.css'
 
 function index({ getFiles, defaultFolder = "root" }) {
   const [reload, setReload] = useState(false)
-  const [displayText, setDisplayText] = useState(false);
+  const [content, setContent] = useState(false);
   const [treeView, setTreeView] = useState([]);
   const [files, setfiles] = useState({ "name": defaultFolder });
 
   useEffect(() => {
-    getItemsRecursively([files], []);
+    getTreeView([files], []);
   }, [reload])
 
   return (
@@ -20,7 +20,7 @@ function index({ getFiles, defaultFolder = "root" }) {
           treeView
         }
         <div id="overlay" onClick={() => onItemClick('', 'none')}>
-          <div id="text">{displayText}</div>
+          <div id="text">{content}</div>
         </div>
       </div>
     </div>
@@ -38,11 +38,11 @@ function index({ getFiles, defaultFolder = "root" }) {
   }
 
   function onItemClick(text = '', value) {
-    setDisplayText(text);
+    setContent(text);
     document.getElementById("overlay").style.display = value;
   }
 
-  function getItemsRecursively(entries = [], prevValues = [], space = 0) {
+  function getTreeView(entries = [], prevValues = [], space = 0) {
     var element = prevValues;
     for (var i = 0; i <= entries.length; i++) {
       let name = entries[i]?.name;
@@ -62,7 +62,7 @@ function index({ getFiles, defaultFolder = "root" }) {
       </div>
       )
       if (entries[i]?.entries && entries[i]?.isActive) {
-        getItemsRecursively(entries[i]?.entries, element, space + 30);
+        getTreeView(entries[i]?.entries, element, space + 30);
       }
     }
     return setTreeView(element);
