@@ -33,14 +33,6 @@
   padding: 4px;
 }
 
-.accordion-sub-item {
-  display: flex ;
-  align-items: flex-start;
-  color: inherit;
-  fill: inherit;
-  line-height: 10px;
-}
-
 .accordion-title {
   font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace;
   line-height: normal;

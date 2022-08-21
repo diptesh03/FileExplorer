@@ -1,15 +1,11 @@
 import { useEffect, useState } from 'react'
 import './../../App.css'
-import axios from 'axios';
 
 function index({ getFiles }) {
   const [reload, setReload] = useState(false)
   const [displayText, setDisplayText] = useState(false);
   const [treeView, setTreeView] = useState([]);
-
-  const [files, setfiles] = useState({
-    "name": "root"
-  })
+  const [files, setfiles] = useState({ "name": "root" });
 
   useEffect(() => {
     getItemsRecursively([files], []);
@@ -23,7 +19,7 @@ function index({ getFiles }) {
           treeView &&
           treeView
         }
-        <div id="overlay" onClick={() => onItemClick('','none')}>
+        <div id="overlay" onClick={() => onItemClick('', 'none')}>
           <div id="text">{displayText}</div>
         </div>
       </div>
@@ -41,44 +37,38 @@ function index({ getFiles }) {
       })
   }
 
-  function onItemClick(text='', value){
+  function onItemClick(text = '', value) {
     setDisplayText(text);
-    document.getElementById("overlay").style.display =  value;
+    document.getElementById("overlay").style.display = value;
   }
 
-  function getItemsRecursively(entries = [], prevValues = [], space=0) {
+  function getItemsRecursively(entries = [], prevValues = [], space = 0) {
     var element = prevValues;
     for (var i = 0; i <= entries.length; i++) {
       let name = entries[i]?.name;
-      
       if (name == null || name == undefined) {
         break;
       }
-
       element.push(
-        <div style={{marginLeft: space}} className="accordion-item" key={entries[i]?.name + i}>
-          {
-            <div className="accordion-icon" data-item={entries[i]?.name} data-isactive={entries[i]?.isActive} onClick={(e) => onExpandIconClick(e, entries[i]?.isActive)}>{entries[i]?.type != 'file' ? entries[i]?.isActive ? "-" : "+" : ''}</div>
+      <div style={{ marginLeft: space }} className="accordion-item" key={name + i}>
+        {
+          <div className="accordion-icon" data-item={name} data-isactive={entries[i]?.isActive} onClick={(e) => onExpandIconClick(e, entries[i]?.isActive)}>{entries[i]?.type != 'file' ? entries[i]?.isActive ? "-" : "+" : ''}</div>
+        }
+        <a className='accordion-title' data-type={entries[i]?.type} data-contents={entries[i]?.contents} onClick={(e) => {
+          if (e.currentTarget.dataset.type === 'file') {
+            onItemClick(e.currentTarget.dataset.contents || 'No Content', 'block')
           }
-          <a className='accordion-title' data-type={entries[i]?.type} data-contents={entries[i]?.contents} onClick={(e) => {
-            if (e.currentTarget.dataset.type === 'file') {
-              onItemClick(e.currentTarget.dataset.contents || 'No Content', 'block')
-            }
-          }}>
-            {entries[i]?.name}
-          </a>
-        </div>)
+        }}>{name}</a>
+      </div>
+      )
       if (entries[i]?.entries && entries[i]?.isActive) {
         getItemsRecursively(entries[i]?.entries, element, space + 30);
       }
     }
-
     return setTreeView(element);
-
   }
 
-
-  function initializeDataRecursively(obj, property, entries, toggle, rereloadr = true, isSetfiles = true) {
+  function initializeDataRecursively(obj, property, entries, toggle, refresh = true, isSetfiles = true) {
 
     for (var i = 0; i <= Object.keys(obj).length; i++) {
       var key = Object.keys(obj)[i];
@@ -95,24 +85,22 @@ function index({ getFiles }) {
         obj.entries = entries;
         obj.isActive = toggle;
 
-        if (!obj.isActive) 
+        if (!obj.isActive)
           delete obj.isActive;
 
         if (isSetfiles)
-          initializeDataRecursively(files, property, obj.entries, toggle, rereloadr = true, false)
+          initializeDataRecursively(files, property, obj.entries, toggle, refresh = true, false)
 
-
-        if (rereloadr)
+        if (refresh)
           setReload(!reload);
-          break;
+        break;
       }
       if (typeof obj[key] === 'object' && obj[key] !== null) {
-        initializeDataRecursively(obj[key], property, entries, toggle, rereloadr = false, isSetfiles)
+        initializeDataRecursively(obj[key], property, entries, toggle, refresh = false, isSetfiles)
       }
     }
   }
 
 }
-
 
 export default index
