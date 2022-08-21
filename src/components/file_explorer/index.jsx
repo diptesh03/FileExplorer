@@ -3,9 +3,9 @@ import './../../App.css'
 import axios from 'axios';
 
 function index({ getFiles }) {
-  const [loadExplore, setLoadExplorer] = useState(false)
+  const [reload, setReload] = useState(false)
   const [displayText, setDisplayText] = useState(false);
-  const [accordianElem, setAccordianElem] = useState([]);
+  const [treeView, setTreeView] = useState([]);
 
   const [files, setfiles] = useState({
     "name": "root"
@@ -13,15 +13,15 @@ function index({ getFiles }) {
 
   useEffect(() => {
     getItemsRecursively([files], []);
-  }, [loadExplore])
+  }, [reload])
 
   return (
     <div className="App">
       <h1>File Explorer</h1>
       <div className="accordion">
         {
-          accordianElem &&
-          accordianElem
+          treeView &&
+          treeView
         }
         <div id="overlay" onClick={() => onItemClick('','none')}>
           <div id="text">{displayText}</div>
@@ -73,12 +73,12 @@ function index({ getFiles }) {
       }
     }
 
-    return setAccordianElem(element);
+    return setTreeView(element);
 
   }
 
 
-  function initializeDataRecursively(obj, property, entries, toggle, reloadExplorer = true, isSetfiles = true) {
+  function initializeDataRecursively(obj, property, entries, toggle, rereloadr = true, isSetfiles = true) {
 
     for (var i = 0; i <= Object.keys(obj).length; i++) {
       var key = Object.keys(obj)[i];
@@ -99,15 +99,15 @@ function index({ getFiles }) {
           delete obj.isActive;
 
         if (isSetfiles)
-          initializeDataRecursively(files, property, obj.entries, toggle, reloadExplorer = true, false)
+          initializeDataRecursively(files, property, obj.entries, toggle, rereloadr = true, false)
 
 
-        if (reloadExplorer)
-          setLoadExplorer(!loadExplore);
+        if (rereloadr)
+          setReload(!reload);
           break;
       }
       if (typeof obj[key] === 'object' && obj[key] !== null) {
-        initializeDataRecursively(obj[key], property, entries, toggle, reloadExplorer = false, isSetfiles)
+        initializeDataRecursively(obj[key], property, entries, toggle, rereloadr = false, isSetfiles)
       }
     }
   }

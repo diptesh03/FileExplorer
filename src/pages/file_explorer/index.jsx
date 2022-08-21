@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import Application from './file_explorer'
+import Application from '../../components/file_explorer'
 import axios from 'axios';
 
 function index() {
