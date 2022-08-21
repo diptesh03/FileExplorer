@@ -33,7 +33,7 @@ function index({ getFiles, defaultFolder = "root" }) {
       .then((resp) => {
         resp.data.name = resp.data.id;
         delete resp.data.id;
-        initializeDataRecursively(files, currentItem, resp.data.entries, isActive)
+        initializeTreeData(files, currentItem, resp.data.entries, isActive)
       })
   }
 
@@ -68,7 +68,7 @@ function index({ getFiles, defaultFolder = "root" }) {
     return setTreeView(element);
   }
 
-  function initializeDataRecursively(obj, property, entries, toggle, refresh = true, isSetfiles = true) {
+  function initializeTreeData(obj, property, entries, toggle, refresh = true, isSetfiles = true) {
 
     for (var i = 0; i <= Object.keys(obj).length; i++) {
       var key = Object.keys(obj)[i];
@@ -89,14 +89,14 @@ function index({ getFiles, defaultFolder = "root" }) {
           delete obj.isActive;
 
         if (isSetfiles)
-          initializeDataRecursively(files, property, obj.entries, toggle, refresh = true, false)
+          initializeTreeData(files, property, obj.entries, toggle, refresh = true, false)
 
         if (refresh)
           setReload(!reload);
         break;
       }
       if (typeof obj[key] === 'object' && obj[key] !== null) {
-        initializeDataRecursively(obj[key], property, entries, toggle, refresh = false, isSetfiles)
+        initializeTreeData(obj[key], property, entries, toggle, refresh = false, isSetfiles)
       }
     }
   }
